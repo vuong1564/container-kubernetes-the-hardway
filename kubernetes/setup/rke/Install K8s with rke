@@ -1,0 +1,65 @@
+## Allow root ssh
+sed -i 's/^PasswordAuthentication .*/PasswordAuthentication yes/' /etc/ssh/sshd_config
+echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
+systemctl reload sshd
+ssh-keygen -t rsa -b 2048
+ssh-copy-id root@<host>
+
+## Prepare the node <disable fw and swap, update networking
+ufw disable
+swapoff -a; sed -i '/swap/d' /etc/fstab
+cat >>/etc/sysctl.d/kubernetes.conf<<EOF
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+sysctl --system
+
+## Container runtime setup
+# install Docker
+apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+DockerVersion=5:19.03.13~3-0~ubuntu-bionic
+sudo apt-get install -y docker-ce=$DockerVersion docker-ce-cli=$DockerVersion containerd.io
+
+# Create Docker Group
+sudo groupadd docker
+
+# Add User to the docker Group
+sudo usermod -aG docker $USER
+
+# Activate Changes
+newgrp docker
+
+# setting insecure registry in docker (use http)
+# vi /etc/docker/daemon.json
+
+cat >>/etc/docker/daemon.json<<EOF
+{
+   "exec-opts": ["native.cgroupdriver=systemd"],
+   "log-driver": "json-file",
+   "log-opts": {
+     "max-size": "100m"
+   },
+   "storage-driver": "overlay2",
+   "storage-opts": [
+     "overlay2.override_kernel_check=true"
+   ],
+   "insecure-registries" : ["10.58.244.248:8082", "nexus.digital.vn","192.168.50.11:8082", "192.168.50.11:8083", "nexus-lab.digital.vn", "nexus.nhattm.vn", "localhost:32000"]
+}
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+
+##install rke
+## bootstrap cluster
+rke config
+rke up
+
+## install kubectl
+curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+mkdir  $HOME/.kube/
+cp kube_config_cluster.yml $HOME/.kube/config
+export KUBECONFIG=$(pwd)/kube_config_cluster.yml

@@ -1,0 +1,22 @@
+{
+  "architecture": "arm64",
+  "os": "linux",
+  "variant": "v8",
+  "rootfs": {
+    "type": "layers",
+    "diff_ids": [
+      "sha256:cc03ea480c89646159d476a0afdef5c3a95a493c61c7f29e5dfa400710902f48",
+      "sha256:c590df626873b4be19285a144d5cf9217a95c706366bbf8454f1556081434c8d"
+    ]
+  },
+  "config": {
+    "Env": [
+      "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "COURSE=Container-The-Hardway"
+    ],
+    "Cmd": [
+      "/entrypoint.sh"
+    ],
+    "WorkingDir": "/"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "architecture": "amd64",
+  "os": "linux",
+  "rootfs": {
+    "type": "layers",
+    "diff_ids": [
+      "sha256:6b30a70a09ae33a6b27ad806880e5ef94bf29869b0e25155c22173bf4d71034f",
+      "sha256:d17b0708f68f1e8fde46617a82935460cf051a979dab901011edceddadc06f00"
+    ]
+  },
+  "config": {
+    "Env": [
+      "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "COURSE=Container-The-Hardway"
+    ],
+    "Cmd": [
+      "/entrypoint.sh"
+    ],
+    "WorkingDir": "/"
+  }
+}

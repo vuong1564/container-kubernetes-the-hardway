@@ -1,0 +1,1 @@
+{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/home/vuongnd/data/k1.5-container-kubernetes-the-hardway/kubernetes/setup","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}

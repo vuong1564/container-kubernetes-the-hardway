@@ -1,0 +1,13 @@
+sudo mount -o loop rhel-server-7.9-x86_64-dvd.iso /mnt
+sudo cp /mnt/media.repo /etc/yum.repos.d/rhel7.repo
+sudo chmod 644 /etc/yum.repos.d/rhel7.repo
+sudo vi /etc/yum.repos.d/rhel7.repo
+
+enabled=1
+baseurl=file:///mnt/
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
+cd /etc/yum.repos.d/
+sudo rm -f epel*
+sudo yum clean all
+sudo yum repolist -v

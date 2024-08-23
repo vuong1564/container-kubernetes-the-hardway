@@ -1,0 +1,41 @@
+1. Starting up virtual lab (1 controller + 2 nodes)
+vagrant up
+
+2. Install tools
+vagrant ssh controller-1
+cd /vagrant
+sudo bash scripts/install_tools.sh
+
+3. Provisioning CA & Certificates & Configuration
+vagrant ssh controller-1
+cd /vagrant
+sudo bash scripts/provision_cert_and_cfg.sh
+
+4. Setting up etcd
+vagrant ssh controller-1
+cd /vagrant/
+sudo bash scripts/etcd.sh
+
+5. Bootstrap control plane
+vagrant ssh controller-1
+cd /vagrant
+sudo bash scripts/bootstrap-control-plane.sh
+
+6. Setting up nodes (Do the same to all worker nodes)
+vagrant ssh worker-1
+cd /vagrant
+sudo bash scripts/bootstrap-worker.sh
+
+7. Deploy Calico CNI
+vagrant ssh controller-1
+cd /vagrant
+sudo bash scripts/deploy-calico-cni.sh
+
+8. Deploy Add-ons
+vagrant ssh controller-1
+cd /vagrant
+sudo bash scripts/add-ons.sh
+
+# Verify 
+kubectl run alpine --image=alpine:latest --command -- sleep 3600
+

@@ -1,0 +1,17 @@
+## Deploy application 
+kubectl apply -f hpa/manifest/app.yaml
+
+## Create HPA
+kubectl apply -f hpa/manifest/hpa.yaml
+
+## Generate Load
+kubectl run -i --tty load-generator --rm --image=busybox:1.28 \
+  --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://php-apache; done"
+
+kubectl run -i --tty load-generator-2 --rm --image=busybox:1.28 \
+  --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://php-apache; done"
+
+
+## Observing changes on number of replicas
+
+# Stop load-generator & watch changes (need wait around 1-2m for pods to scale down)

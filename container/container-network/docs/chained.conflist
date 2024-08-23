@@ -1,0 +1,29 @@
+{
+  "cniVersion": "1.0.0",
+  "name": "devops",
+  "plugins": [
+    {
+      "type": "bridge",
+      "bridge": "devops0",
+      "isGateway": true,
+      "ipMasq": true,      
+      "ipam": {
+        "type": "host-local",
+        "subnet": "172.16.16.0/24",
+        "routes": [
+            { "dst": "0.0.0.0/0" }
+        ],
+        "rangeStart": "172.16.16.100",
+        "rangeEnd": "172.16.16.200",
+        "gateway": "172.16.16.10"
+      },
+      "dns": {
+        "nameservers": [ "1.1.1.1" ]
+      }
+    },
+    {
+        "type": "portmap",
+        "capabilities": {"portMappings": true}
+    }
+  ]
+}
